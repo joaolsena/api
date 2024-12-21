@@ -5,11 +5,11 @@
         "node": "22.x"
     },
     "scripts": {
-      "start": "node server.js"
+        "start": "node server.js"
     },
     "dependencies": {
-      "express": "^4.21.2",
-      "cors": "^2.8.5"
+        "cors": "^2.8.5",
+        "express": "^4.21.2",
+        "mongoose": "^8.9.2"
     }
-  }
-  
+}

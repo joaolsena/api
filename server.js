@@ -1,51 +1,56 @@
-//node server.js
-
-
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs"); // File System para ler e escrever arquivos
-const path = require("path");
+const mongoose = require("mongoose");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Caminho para o arquivo de projetos
-const projetosFilePath = path.join(__dirname, "projetos.json");
+// **Conexão com o MongoDB**
+const mongoURI = "mongodb+srv://joaolsena129:uOS3YrozpMqlh4xS@cluster0.j4okv.mongodb.net/?retryWrites=true&w=majority";
+ // Substitua pela sua URI
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Conectado ao MongoDB"))
+  .catch((error) => console.error("Erro ao conectar ao MongoDB:", error));
 
-// Função para carregar projetos do arquivo JSON
-const carregarProjetos = () => {
-  if (fs.existsSync(projetosFilePath)) {
-    const data = fs.readFileSync(projetosFilePath);
-    return JSON.parse(data);
+// **Modelo do MongoDB**
+const Projeto = mongoose.model("Projeto", {
+  titulo: String,
+  descricao: String,
+  autor: String,
+  data: String,
+});
+
+// **Rotas**
+// Rota para obter todos os projetos
+app.get("/projetos", async (req, res) => {
+  try {
+    const projetos = await Projeto.find();
+    res.json(projetos);
+  } catch (error) {
+    console.error("Erro ao buscar projetos:", error);
+    res.status(500).send("Erro ao buscar projetos");
   }
-  return []; // Caso o arquivo não exista, retorna um array vazio
-};
-
-// Função para salvar projetos no arquivo JSON
-const salvarProjetos = (projetos) => {
-  fs.writeFileSync(projetosFilePath, JSON.stringify(projetos, null, 2));
-};
-
-// Rota para obter os projetos
-app.get("/projetos", (req, res) => {
-  const projetos = carregarProjetos();
-  res.json(projetos);
 });
 
 // Rota para adicionar um novo projeto
-app.post("/adicionar", (req, res) => {
-  const projetos = carregarProjetos();
-  const novoProjeto = {
-    ...req.body,
-    id: projetos.length + 1,
-    data: new Date().toLocaleDateString("pt-BR"), // Adiciona data ao projeto
-  };
-  projetos.push(novoProjeto);
-  salvarProjetos(projetos); // Salva no arquivo
-  res.status(201).json(novoProjeto);
+app.post("/adicionar", async (req, res) => {
+  try {
+    const novoProjeto = new Projeto({
+      ...req.body,
+      data: new Date().toLocaleDateString("pt-BR"), // Adiciona a data automaticamente
+    });
+    await novoProjeto.save();
+    res.status(201).json(novoProjeto);
+  } catch (error) {
+    console.error("Erro ao adicionar projeto:", error);
+    res.status(500).send("Erro ao adicionar projeto");
+  }
 });
 
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
+// **Servidor**
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
