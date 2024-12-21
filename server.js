@@ -46,14 +46,6 @@ app.post("/adicionar", (req, res) => {
   res.status(201).json(novoProjeto);
 });
 
-// Rota para excluir um projeto
-app.delete("/projetos/:id", (req, res) => {
-  const projetos = carregarProjetos();
-  const projetosFiltrados = projetos.filter((projeto) => projeto.id !== parseInt(req.params.id));
-  salvarProjetos(projetosFiltrados); // Salva no arquivo
-  res.status(200).json({ message: "Projeto excluído com sucesso!" });
-});
-
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
