@@ -8,9 +8,14 @@ app.use(express.json());
 
 // **Conexão com o MongoDB**
 const mongoURI = "mongodb+srv://joaolsena129:uOS3YrozpMqlh4xS@cluster0.j4okv.mongodb.net/?retryWrites=true&w=majority";
- // Substitua pela sua URI
-mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+ 
+// Conexão com o MongoDB
+mongoose.connect(mongoURI, { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true, 
+  serverSelectionTimeoutMS: 5000,  // Timeout de 5 segundos para seleção do servidor
+  connectTimeoutMS: 10000, // Timeout de 10 segundos para conexão
+})
   .then(() => console.log("Conectado ao MongoDB"))
   .catch((error) => console.error("Erro ao conectar ao MongoDB:", error));
 
