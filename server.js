@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // **Conexão com o MongoDB**
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/nomeDoBanco";
+const mongoURI = process.env.MONGO_URI;
 
 // Conexão com o MongoDB
 mongoose.connect(mongoURI, { 
