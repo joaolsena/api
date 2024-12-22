@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // **Conexão com o MongoDB**
-const mongoURI = process.env.MONGO_URI;
+const mongoURI = "mongodb+srv://joaolsena129:uOS3YrozpMqlh4xS@cluster0.j4okv.mongodb.net/?retryWrites=true&w=majority";
 
 // Conexão com o MongoDB
 mongoose.connect(mongoURI, { 
